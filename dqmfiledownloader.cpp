@@ -1,6 +1,7 @@
 #include "dqmfiledownloader.h"
 #include "ui_dqmfiledownloader.h"
 
+#include <QFileDialog>
 #include <QDebug>
 #include <QSortFilterProxyModel>
 #include <TEnv.h>
@@ -38,6 +39,9 @@ void DQMFileDownloader::on_pushButton_clicked()
 
     qDebug() << "Number of selected items: " << ui->listView->selectionModel()->selectedIndexes().size();
 
+    // TODO: Make multithreaded
+    // because it blocks the UI
+    // might also avoid bottlenecking write speed
     for(auto& e : ui->listView->selectionModel()->selectedIndexes()) {
         auto real_idx = proxy_remote_files_model->mapToSource(e);
         QString name = remote_files_model->data(real_idx, Qt::DisplayRole).toString();
@@ -69,4 +73,6 @@ void DQMFileDownloader::on_pushButton_2_clicked()
 void DQMFileDownloader::on_actionPreferences_triggered()
 {
     qDebug() << "Settings clicked";
+    QString fileName = QFileDialog::getOpenFileName(this,
+        tr("Select"), "./", tr("PEM certificate (*.pem)"));
 }

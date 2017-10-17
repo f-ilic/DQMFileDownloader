@@ -30,7 +30,8 @@ SOURCES += main.cpp\
 
 HEADERS  += dqmfiledownloader.h \
             filecontainer.h \
-            remotefilesmodel.h
+            remotefilesmodel.h \
+            settingsmanager.h
 
 FORMS    += dqmfiledownloader.ui
 
