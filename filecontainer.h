@@ -9,12 +9,6 @@ public:
         file_path = path;
     }
 
-    //TODO: remove this constructor, just allow QString
-    FileContainer(std::string name, std::string path) {
-        display_name = QString::fromStdString(name);
-        file_path = QString::fromStdString(path);
-    }
-
     QString getName() const { return display_name; }
     QString getPath() const { return file_path;    }
 

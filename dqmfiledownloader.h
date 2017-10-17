@@ -18,7 +18,7 @@ public:
     ~DQMFileDownloader();
 
     // this is static so that QtConcurrent accepts it without having to write a wrapper
-    static void download_tfile_from_url(QString download_path, QString url);
+    static bool download_tfile_from_url(QString download_path, QString url);
 
 private slots:
     void on_pushButton_clicked();

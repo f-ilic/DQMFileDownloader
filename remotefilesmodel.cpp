@@ -1,31 +1,32 @@
 #include <QFile>
 #include <QTextStream>
 #include "remotefilesmodel.h"
-#include <iostream>
-
+#include <QDebug>
+#include <QDir>
 
 RemoteFilesModel::RemoteFilesModel(QObject* parent)
 {
     this->parent = parent;
+    fill_model_from_file("/home/fil/projects/DQMFileDownloader/remote_files.txt");
+}
 
-    QString files_list_path = "/home/fil/projects/DQMFileDownloader/remote_files.txt"; //TODO: QSettings
-    QFile file(files_list_path);
+void RemoteFilesModel::fill_model_from_file(QString path)
+{
+    QFile file(path);
     file.open(QIODevice::ReadOnly | QIODevice::Text);
     QTextStream in(&file);
     in.setCodec("UTF-8");
 
-    //TODO: fix std::string => QString
-    // use QStringRef for filename
+    // turn a string like:
+    // https://cmsweb.cern.ch/dqm/online/data/browse/Original/00030xxxx/0003039xx/DQM_V0001_Scal_R000303995.root
+    // into DQM_V0001_Scal_R000303995.root, and fill the model with that name + urlpath
     while(!in.atEnd()) {
-        std::string path = in.readLine().toStdString();
-
-        int beginIdx = path.rfind('/');
-        std::string display_name = path.substr(beginIdx + 1);
-
+        QString path = in.readLine();
+        auto tmp = path.lastIndexOf("/");
+        QString display_name = path.mid(tmp+1);
         remote_files.push_back(FileContainer(display_name, path));
     }
 }
-
 
 int RemoteFilesModel::rowCount(const QModelIndex& parent) const
 {

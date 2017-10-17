@@ -22,8 +22,8 @@ private:
     static SettingsManager* instance_;
 
     const QMap<SETTING, QString>map = { { SETTING::DOWNLOAD_PATH,         "download_path" },
-                                      { SETTING::USER_CERTIFICATE_PATH, "user_certificate_path" },
-                                      { SETTING::USER_KEY_PATH,         "user_key_path" } };
+                                        { SETTING::USER_CERTIFICATE_PATH, "user_certificate_path" },
+                                        { SETTING::USER_KEY_PATH,         "user_key_path" } };
 
     const QString settings_file_path = "./settings.ini";
 };

@@ -34,7 +34,6 @@ void SettingsDialog::on_pushButton_3_clicked()
 {
     // download path
     QString file_name = QFileDialog::getExistingDirectory(this, tr("Select"), "/home/");
-    qDebug() << file_name;
     ui->lineEdit_download_path->setText(file_name);
 }
 
@@ -42,7 +41,6 @@ void SettingsDialog::on_pushButton_clicked()
 {
     // user certificate path
     QString file_name = QFileDialog::getOpenFileName(this, tr("Select"), "/home/", tr("PEM certificate (*.pem)"));
-    qDebug() << file_name;
     ui->lineEdit_user_certificate->setText(file_name);
 }
 
@@ -50,6 +48,5 @@ void SettingsDialog::on_pushButton_2_clicked()
 {
     // user key path
     QString file_name = QFileDialog::getOpenFileName(this, tr("Select"), "/home/", tr("PEM certificate (*.pem)"));
-    qDebug() << file_name;
     ui->lineEdit_user_key->setText(file_name);
 }

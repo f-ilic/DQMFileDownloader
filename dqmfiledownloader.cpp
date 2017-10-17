@@ -31,17 +31,18 @@ DQMFileDownloader::~DQMFileDownloader()
     delete ui;
 }
 
-void DQMFileDownloader::download_tfile_from_url(QString download_path, QString url)
+bool DQMFileDownloader::download_tfile_from_url(QString download_path, QString url)
 {
     TFile* f = TFile::Open(url.toStdString().c_str());
-    f->Cp(download_path.toStdString().c_str());
-    f->Close();
+    if(f) {
+        f->Cp(download_path.toStdString().c_str());
+        f->Close();
+    }
+    return f;
 }
 
 void DQMFileDownloader::on_pushButton_clicked()
 {
-    // TODO: error handling if connection is refused.
-
     setupCertificates();
     QString download_base_path = SettingsManager::getInstance().getSetting(SETTING::DOWNLOAD_PATH);
 
@@ -51,9 +52,11 @@ void DQMFileDownloader::on_pushButton_clicked()
         QString url  = remote_files_model->getFilepath(real_idx);
         QString download_path =  download_base_path + "/" + name;
 
-        //TODO: maybe enable multithreading option in case ROOT is doing some funny
-        //      stuff with TFile::Cp()
-        QtConcurrent::run(DQMFileDownloader::download_tfile_from_url, download_path, url);
+        QFuture<bool> future = QtConcurrent::run(DQMFileDownloader::download_tfile_from_url, download_path, url);
+        qDebug() << name << " downloaded: " << future;
+        if(!future) {
+            ui->statusBar->showMessage("Could not download " + name);
+        }
     }
 }
 

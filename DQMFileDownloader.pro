@@ -27,17 +27,17 @@ CONFIG += console
 SOURCES += main.cpp\
            dqmfiledownloader.cpp \
            remotefilesmodel.cpp \
-    settingsdialog.cpp \
-    settingsmanager.cpp
+           settingsdialog.cpp \
+           settingsmanager.cpp
 
 HEADERS  += dqmfiledownloader.h \
             filecontainer.h \
             remotefilesmodel.h \
             settingsmanager.h \
-    settingsdialog.h
+            settingsdialog.h
 
 FORMS    += dqmfiledownloader.ui \
-    settingsdialog.ui
+            settingsdialog.ui
 
 LIBS     += -L/usr/local/lib -lGui -lCore -lImt -lRIO -lNet \
             -lHist -lGraf -lGraf3d -lGpad -lTree -lTreePlayer \

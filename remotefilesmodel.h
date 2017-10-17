@@ -17,6 +17,8 @@ public:
     QVariant data(const QModelIndex& index, int role) const override;
 
 private:
+    void fill_model_from_file(QString path);
+
     std::vector<FileContainer> remote_files;
     QObject *parent;
 };
