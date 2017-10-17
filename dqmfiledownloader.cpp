@@ -1,6 +1,9 @@
 #include "dqmfiledownloader.h"
 #include "ui_dqmfiledownloader.h"
 
+#include "settingsdialog.h"
+#include "settingsmanager.h"
+
 #include <QFileDialog>
 #include <QDebug>
 #include <QSortFilterProxyModel>
@@ -30,14 +33,9 @@ DQMFileDownloader::~DQMFileDownloader()
 void DQMFileDownloader::on_pushButton_clicked()
 {
     // TODO: error handling if connection is refused.
-    QString cert = "/home/fil/Documents/usercert.pem"; //TODO: QSettings
-    QString key = "/home/fil/Documents/userkey.pem";   //TODO: QSettings
-    gEnv->SetValue("Davix.GSI.UserCert", cert.toStdString().c_str());
-    gEnv->SetValue("Davix.GSI.UserKey", key.toStdString().c_str());
-    gEnv->SetValue("Davix.GSI.GridMode", true);
-    gEnv->SetValue("Davix.GSI.CACheck", false);
 
-    qDebug() << "Number of selected items: " << ui->listView->selectionModel()->selectedIndexes().size();
+    setupCertificates();
+    QString download_base_path = SettingsManager::getInstance().getSetting(SETTING::DOWNLOAD_PATH);
 
     // TODO: Make multithreaded
     // because it blocks the UI
@@ -50,14 +48,15 @@ void DQMFileDownloader::on_pushButton_clicked()
         qDebug() << "Item: " << name << " => " << url;
 
         TFile* f = TFile::Open(url.toStdString().c_str());
-        QString download_base_path = "/home/fil/projects/DQMFileDownloader/"; //TODO: QSettings
-        QString download_path =  download_base_path + name;
+        QString download_path =  download_base_path + "/" + name;
 
         ui->statusBar->showMessage("Downloading... " + name);
         f->Cp(download_path.toStdString().c_str());
         ui->statusBar->showMessage("Ready!");
     }
 }
+
+
 
 void DQMFileDownloader::on_listView_doubleClicked(const QModelIndex &index)
 {
@@ -73,6 +72,18 @@ void DQMFileDownloader::on_pushButton_2_clicked()
 void DQMFileDownloader::on_actionPreferences_triggered()
 {
     qDebug() << "Settings clicked";
-    QString fileName = QFileDialog::getOpenFileName(this,
-        tr("Select"), "./", tr("PEM certificate (*.pem)"));
+    SettingsDialog* settings_dialog = new SettingsDialog;
+    settings_dialog->setAttribute(Qt::WA_DeleteOnClose);
+    settings_dialog->show();
+}
+
+void DQMFileDownloader::setupCertificates()
+{
+    auto& instance =  SettingsManager::getInstance();
+    QString cert = instance.getSetting(SETTING::USER_CERTIFICATE_PATH);
+    QString key = instance.getSetting(SETTING::USER_KEY_PATH);
+    gEnv->SetValue("Davix.GSI.UserCert", cert.toStdString().c_str());
+    gEnv->SetValue("Davix.GSI.UserKey", key.toStdString().c_str());
+    gEnv->SetValue("Davix.GSI.GridMode", true);
+    gEnv->SetValue("Davix.GSI.CACheck", false);
 }

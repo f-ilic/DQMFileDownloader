@@ -25,15 +25,19 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += console
 
 SOURCES += main.cpp\
-        dqmfiledownloader.cpp \
-        remotefilesmodel.cpp
+           dqmfiledownloader.cpp \
+           remotefilesmodel.cpp \
+    settingsdialog.cpp \
+    settingsmanager.cpp
 
 HEADERS  += dqmfiledownloader.h \
             filecontainer.h \
             remotefilesmodel.h \
-            settingsmanager.h
+            settingsmanager.h \
+    settingsdialog.h
 
-FORMS    += dqmfiledownloader.ui
+FORMS    += dqmfiledownloader.ui \
+    settingsdialog.ui
 
 LIBS     += -L/usr/local/lib -lGui -lCore -lImt -lRIO -lNet \
             -lHist -lGraf -lGraf3d -lGpad -lTree -lTreePlayer \

@@ -24,6 +24,8 @@ private slots:
     void on_actionPreferences_triggered();
 
 private:
+    void setupCertificates();
+
     Ui::DQMFileDownloader *ui;
     RemoteFilesModel      *remote_files_model;
     QSortFilterProxyModel *proxy_remote_files_model;
