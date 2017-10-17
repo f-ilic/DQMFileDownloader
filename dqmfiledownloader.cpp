@@ -9,6 +9,7 @@
 #include <QSortFilterProxyModel>
 #include <TEnv.h>
 #include <TFile.h>
+#include <QtConcurrent/QtConcurrent>
 
 DQMFileDownloader::DQMFileDownloader(QWidget *parent) :
     QMainWindow(parent),
@@ -30,6 +31,13 @@ DQMFileDownloader::~DQMFileDownloader()
     delete ui;
 }
 
+void DQMFileDownloader::download_tfile_from_url(QString download_path, QString url)
+{
+    TFile* f = TFile::Open(url.toStdString().c_str());
+    f->Cp(download_path.toStdString().c_str());
+    f->Close();
+}
+
 void DQMFileDownloader::on_pushButton_clicked()
 {
     // TODO: error handling if connection is refused.
@@ -37,26 +45,17 @@ void DQMFileDownloader::on_pushButton_clicked()
     setupCertificates();
     QString download_base_path = SettingsManager::getInstance().getSetting(SETTING::DOWNLOAD_PATH);
 
-    // TODO: Make multithreaded
-    // because it blocks the UI
-    // might also avoid bottlenecking write speed
     for(auto& e : ui->listView->selectionModel()->selectedIndexes()) {
         auto real_idx = proxy_remote_files_model->mapToSource(e);
         QString name = remote_files_model->data(real_idx, Qt::DisplayRole).toString();
         QString url  = remote_files_model->getFilepath(real_idx);
-
-        qDebug() << "Item: " << name << " => " << url;
-
-        TFile* f = TFile::Open(url.toStdString().c_str());
         QString download_path =  download_base_path + "/" + name;
 
-        ui->statusBar->showMessage("Downloading... " + name);
-        f->Cp(download_path.toStdString().c_str());
-        ui->statusBar->showMessage("Ready!");
+        //TODO: maybe enable multithreading option in case ROOT is doing some funny
+        //      stuff with TFile::Cp()
+        QtConcurrent::run(DQMFileDownloader::download_tfile_from_url, download_path, url);
     }
 }
-
-
 
 void DQMFileDownloader::on_listView_doubleClicked(const QModelIndex &index)
 {
